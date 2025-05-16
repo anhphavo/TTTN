@@ -1,0 +1,22 @@
+
+{
+	"id": "10fbe71f-2334-41f2-8c04-a6791ca311bb",
+	"name": "Hoa - Valentine's Book List API",
+	"values": [
+		{
+			"key": "baseUrl",
+			"value": "https://valentines-book-list.glitch.me",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "category",
+			"value": "fiction",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2024-12-19T15:57:16.644Z",
+	"_postman_exported_using": "Postman/11.18.4"
+}

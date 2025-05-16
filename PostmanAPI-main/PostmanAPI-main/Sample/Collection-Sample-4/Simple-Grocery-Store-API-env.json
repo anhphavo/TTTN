@@ -1,0 +1,75 @@
+{
+	"id": "77260428-70fa-4a31-ba32-bf26833151c2",
+	"name": "Hoa - Simple Grocery Store API",
+	"values": [
+		{
+			"key": "baseUrl",
+			"value": "https://simple-grocery-store-api.glitch.me",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "accessToken",
+			"value": "cb7c74beaa9daa9ab325c75750741dab887cfc1800e0f67120d13b38aae86e95",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "productId",
+			"value": "8554",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "cartId",
+			"value": "uA-S0yUnf4dguOF_reKym",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "itemId",
+			"value": "175046572",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "orderId",
+			"value": "3J7DyXYYIltOh3wsdp8Wq",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "customerName",
+			"value": "Hoa_Test_85983",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "email",
+			"value": "hoa_test85983@example.com",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "comment",
+			"value": "Hoa_Test_85983 & hoa_test85983@example.com",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "count",
+			"value": "0",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "category",
+			"value": "candy",
+			"type": "any",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2024-12-19T15:56:05.766Z",
+	"_postman_exported_using": "Postman/11.18.4"
+}

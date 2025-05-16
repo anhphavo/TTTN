@@ -1,0 +1,1806 @@
+{
+	"info": {
+		"_postman_id": "4291e110-4c4c-4a67-9fad-65b117e9a192",
+		"name": "[QC_GiangVo]_API_Lesson_3_Final",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33418710"
+	},
+	"item": [
+		{
+			"name": "1. Simple Grocery Store API",
+			"item": [
+				{
+					"name": "1.1   API Client",
+					"item": [
+						{
+							"name": "201 Created",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let response = pm.response.json();",
+											"let refreshToken = response.accessToken;",
+											"",
+											"// Tạo Collection variable \"accessToken\"",
+											"if (refreshToken) {",
+											"    pm.collectionVariables.set(\"accessToken\", refreshToken);",
+											"    console.log(`New Token is ${refreshToken}`);",
+											"} else {",
+											"    console.log(\"Not exist token in response.\")",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Tạo random clientName tối đa 17 ký tự theo format YourName_Test_{random number}",
+											"",
+											"const MAXIMUM_LEN_NAME = 17;",
+											"let prefixName = \"GiangVo_Test_\";",
+											"let suffixName = Math.floor(Math.random() * Math.pow(10, (MAXIMUM_LEN_NAME - prefixName.length)));",
+											"let clientName = prefixName + suffixName;",
+											"pm.collectionVariables.set(\"clientName\", clientName);",
+											"",
+											"console.log(`Client name is ${clientName}`);",
+											"",
+											"// Tạo random clientEmail theo format yourname_test{random 5 numbers}@example.com",
+											"",
+											"let prefixEmail = prefixName.toLowerCase().replace(/_$/, \"\");",
+											"let suffixEmail = Math.floor(Math.random() * 100000);",
+											"let clientEmail = `${prefixEmail}${suffixEmail}@example.com`;",
+											"pm.collectionVariables.set(\"clientEmail\", clientEmail);",
+											"",
+											"console.log(`Client email is ${clientEmail}`);",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n   \"clientName\": \"{{clientName}}\",\n   \"clientEmail\": \"{{clientEmail}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base-url}}/api-clients",
+									"host": [
+										"{{base-url}}"
+									],
+									"path": [
+										"api-clients"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "201 Created",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n   \"clientName\": \"{{clientName}}\",\n   \"clientEmail\": \"{{clientEmail}}\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base-url}}/api-clients",
+											"host": [
+												"{{base-url}}"
+											],
+											"path": [
+												"api-clients"
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Wed, 11 Dec 2024 17:41:36 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "82"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-powered-by",
+											"value": "Express"
+										},
+										{
+											"key": "etag",
+											"value": "W/\"52-rHt+pVtDqvnfDZJUb2Oq7VK1UxM\""
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"accessToken\": \"8630086a63dcd728fe6b14a18da692e425430b3f19d1789dc7135e30a446e372\"\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "1.4 API Add Item To Cart",
+					"item": [
+						{
+							"name": "201 Created",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"// Set URL",
+											"let createCartUrl = 'https://simple-grocery-store-api.glitch.me/carts';",
+											"",
+											"// Call API Create a new cart",
+											"pm.sendRequest({",
+											"    url: createCartUrl,",
+											"    method: 'POST'",
+											"}, function (err, response) {",
+											"    if (err) {",
+											"        console.error(\"Error creating cart:\", err);",
+											"    } else {",
+											"        const responseJson = response.json();",
+											"",
+											"        // Kiểm tra phản hồi và lưu collection variable \"cartId\"",
+											"        if (responseJson && responseJson.cartId) {",
+											"            pm.collectionVariables.set(\"cartId\", responseJson.cartId);",
+											"            console.log(\"New Cart ID:\", responseJson.cartId);",
+											"        } else {",
+											"            console.error(\"Failed to get cartId from Create New Cart response\");",
+											"        }",
+											"    }",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n   \"productId\": 4643,\n   \"quantity\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base-url}}/carts/:cartId/items",
+									"host": [
+										"{{base-url}}"
+									],
+									"path": [
+										"carts",
+										":cartId",
+										"items"
+									],
+									"variable": [
+										{
+											"key": "cartId",
+											"value": "{{cartId}}"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "201 Created",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n   \"productId\": 4643,\n   \"quantity\": 1\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base-url}}/carts/:cartId/items",
+											"host": [
+												"{{base-url}}"
+											],
+											"path": [
+												"carts",
+												":cartId",
+												"items"
+											],
+											"variable": [
+												{
+													"key": "cartId",
+													"value": "{{cartId}}"
+												}
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Wed, 11 Dec 2024 17:41:53 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "35"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-powered-by",
+											"value": "Express"
+										},
+										{
+											"key": "etag",
+											"value": "W/\"23-JBysfIpIUcPds6dPMm3bC5paeYI\""
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"created\": true,\n    \"itemId\": 419316933\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "1.2 API Create an Order",
+					"item": [
+						{
+							"name": "201 created",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let response = pm.response.json();",
+											"let orderId = response.orderId;",
+											"",
+											"// Set Collection variable \"orderId\"",
+											"if (orderId) {",
+											"    pm.collectionVariables.set(\"orderId\", orderId);",
+											"    console.log(`Đã cập nhật orderId: ${orderId}`);",
+											"} else {",
+											"    console.log(\"Không tìm thấy orderId trong phản hồi.\");",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"cartId\": \"{{cartId}}\",\n    \"customerName\": \"{{clientName}}\",\n    \"comment\": \"{{clientName}} & {{clientEmail}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base-url}}/orders",
+									"host": [
+										"{{base-url}}"
+									],
+									"path": [
+										"orders"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "201 created",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"cartId\": \"{{cartId}}\",\n    \"customerName\": \"{{clientName}}\",\n    \"comment\": \"{{clientName}} & {{clientEmail}}\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{base-url}}/orders",
+											"host": [
+												"{{base-url}}"
+											],
+											"path": [
+												"orders"
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Wed, 11 Dec 2024 17:42:05 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "50"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-powered-by",
+											"value": "Express"
+										},
+										{
+											"key": "etag",
+											"value": "W/\"32-n3Bhvt8sZZy1VJjDHhjAMpMTmDA\""
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"created\": true,\n    \"orderId\": \"1Ma8BGt4G9Nn8unhHlHlB\"\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "1.3 API Get Single Order",
+					"item": [
+						{
+							"name": "200 OK",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"let response = pm.response.json();",
+											"let comment = response.comment;",
+											"",
+											"// Lấy clientName và clientEmail từ Collection variables",
+											"",
+											"let clientName = pm.collectionVariables.get(\"clientName\");",
+											"let clientEmail = pm.collectionVariables.get(\"clientEmail\");",
+											"",
+											"//Tạo chuỗi kiểm tra theo format của comment",
+											"",
+											"let expectedComment = `${clientName} & ${clientEmail}`;",
+											"",
+											"//So sánh giá trị comment với expectedComment",
+											"",
+											"pm.test(\"Comment matches clientName and clientEmail\", () => {",
+											"    pm.expect(comment).to.eql(expectedComment);",
+											"});",
+											"",
+											"if (comment === expectedComment) {",
+											"    console.log(\"Comment matches:\", comment);",
+											"} else {",
+											"    console.error(\"Comment does not match. Expected:\", expectedComment, \"Actual:\", comment);",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://simple-grocery-store-api.glitch.me/orders/:orderId",
+									"protocol": "https",
+									"host": [
+										"simple-grocery-store-api",
+										"glitch",
+										"me"
+									],
+									"path": [
+										"orders",
+										":orderId"
+									],
+									"query": [
+										{
+											"key": "invoice",
+											"value": null,
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "orderId",
+											"value": "{{orderId}}"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "200 OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://simple-grocery-store-api.glitch.me/orders/:orderId",
+											"protocol": "https",
+											"host": [
+												"simple-grocery-store-api",
+												"glitch",
+												"me"
+											],
+											"path": [
+												"orders",
+												":orderId"
+											],
+											"query": [
+												{
+													"key": "invoice",
+													"value": null,
+													"disabled": true
+												}
+											],
+											"variable": [
+												{
+													"key": "orderId",
+													"value": "{{orderId}}"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Wed, 11 Dec 2024 17:42:15 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "344"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-powered-by",
+											"value": "Express"
+										},
+										{
+											"key": "etag",
+											"value": "W/\"158-19RRx+2XUtiyN9dv+HHLnUMzF0g\""
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": \"1Ma8BGt4G9Nn8unhHlHlB\",\n    \"items\": [\n        {\n            \"id\": 419316933,\n            \"productId\": 4643,\n            \"quantity\": 1\n        }\n    ],\n    \"customerName\": \"GiangVo_Test_7300\",\n    \"createdBy\": \"e608d6080dd1148ebc7078804f6023943c3e0ab93f0963aac6ac94ebf51cfb65\",\n    \"created\": \"2024-12-11T17:42:04.805Z\",\n    \"timestamp\": 1733938924805,\n    \"processed\": false,\n    \"comment\": \"GiangVo_Test_7300 & giangvo_test55225@example.com\"\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "GET /products - Get all products",
+					"item": [
+						{
+							"name": "200 OK",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Lấy random productId",
+											"let response = pm.response.json();",
+											"let randomIndex = Math.floor(Math.random() * response.length);",
+											"let productId = response[randomIndex].id;",
+											"",
+											"// Set Collection variable \"productId\"",
+											"if(productId) {",
+											"    pm.collectionVariables.set(\"productId\", productId);",
+											"    console.log(`PrductId is ${productId}`);",
+											"} else {",
+											"    console.log(\"Không tìm thấy productId trong phản hồi.\");",
+											"}",
+											"",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base-url}}/products",
+									"host": [
+										"{{base-url}}"
+									],
+									"path": [
+										"products"
+									],
+									"query": [
+										{
+											"key": "category",
+											"value": "fresh-produce",
+											"description": "Specifies the category of products you want to be returned. It can be one of: meat-seafood, fresh-produce, candy, bread-bakery, dairy, eggs, coffee.",
+											"disabled": true
+										},
+										{
+											"key": "results",
+											"value": "2",
+											"description": "Specifies the number of results you want. Must be a number between 1 and 20. By default, only 20 products will be displayed.",
+											"disabled": true
+										},
+										{
+											"key": "available",
+											"value": "false",
+											"description": "Specifies the availability of the products. By default, all products will be displayed.",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "200 OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{base-url}}/products",
+											"host": [
+												"{{base-url}}"
+											],
+											"path": [
+												"products"
+											],
+											"query": [
+												{
+													"key": "category",
+													"value": "fresh-produce",
+													"description": "Specifies the category of products you want to be returned. It can be one of: meat-seafood, fresh-produce, candy, bread-bakery, dairy, eggs, coffee.",
+													"disabled": true
+												},
+												{
+													"key": "results",
+													"value": "2",
+													"description": "Specifies the number of results you want. Must be a number between 1 and 20. By default, only 20 products will be displayed.",
+													"disabled": true
+												},
+												{
+													"key": "available",
+													"value": "false",
+													"description": "Specifies the availability of the products. By default, all products will be displayed.",
+													"disabled": true
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Tue, 10 Dec 2024 17:03:02 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "1716"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-powered-by",
+											"value": "Express"
+										},
+										{
+											"key": "etag",
+											"value": "W/\"6b4-RVZTrjCoC03tQFslV/oF2zXZ8Wo\""
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"id\": 4643,\n        \"category\": \"coffee\",\n        \"name\": \"Starbucks Coffee Variety Pack, 100% Arabica\",\n        \"inStock\": true\n    },\n    {\n        \"id\": 4646,\n        \"category\": \"coffee\",\n        \"name\": \"Ethical Bean Medium Dark Roast, Espresso\",\n        \"inStock\": true\n    },\n    {\n        \"id\": 4641,\n        \"category\": \"coffee\",\n        \"name\": \"Don Francisco Colombia Supremo Medium Roast\",\n        \"inStock\": true\n    },\n    {\n        \"id\": 1225,\n        \"category\": \"fresh-produce\",\n        \"name\": \"1/2 in. Brushless Hammer Drill\",\n        \"inStock\": true\n    },\n    {\n        \"id\": 3674,\n        \"category\": \"fresh-produce\",\n        \"name\": \"20V Max Cordless Drill Combo Kit\",\n        \"inStock\": true\n    },\n    {\n        \"id\": 2585,\n        \"category\": \"fresh-produce\",\n        \"name\": \"Green Cabbage Organic\",\n        \"inStock\": true\n    },\n    {\n        \"id\": 5851,\n        \"category\": \"fresh-produce\",\n        \"name\": \"Cucumber Organic\",\n        \"inStock\": false\n    },\n    {\n        \"id\": 8739,\n        \"category\": \"fresh-produce\",\n        \"name\": \"Fresh Spinach Organic\",\n        \"inStock\": true\n    },\n    {\n        \"id\": 2177,\n        \"category\": \"meat-seafood\",\n        \"name\": \"Cosco Three Step Steel Platform\",\n        \"inStock\": true\n    },\n    {\n        \"id\": 1709,\n        \"category\": \"meat-seafood\",\n        \"name\": \"Beef Choice Angus Ribeye Steak\",\n        \"inStock\": true\n    },\n    {\n        \"id\": 1709,\n        \"category\": \"meat-seafood\",\n        \"name\": \"Angus Steak Burgers\",\n        \"inStock\": true\n    },\n    {\n        \"id\": 7395,\n        \"category\": \"meat-seafood\",\n        \"name\": \"Boneless Skinless Chicken Breasts\",\n        \"inStock\": true\n    },\n    {\n        \"id\": 8554,\n        \"category\": \"candy\",\n        \"name\": \"Kinder Joy Eggs\",\n        \"inStock\": true\n    },\n    {\n        \"id\": 6483,\n        \"category\": \"candy\",\n        \"name\": \"Cadbury Milk Chocolate\",\n        \"inStock\": true\n    },\n    {\n        \"id\": 5774,\n        \"category\": \"candy\",\n        \"name\": \"HERSHEY'S, Milk Chocolate Almond\",\n        \"inStock\": true\n    },\n    {\n        \"id\": 8753,\n        \"category\": \"dairy\",\n        \"name\": \"Reduced Fat Milk\",\n        \"inStock\": true\n    },\n    {\n        \"id\": 9482,\n        \"category\": \"dairy\",\n        \"name\": \"Whole Milk\",\n        \"inStock\": true\n    },\n    {\n        \"id\": 5477,\n        \"category\": \"dairy\",\n        \"name\": \"Cream Cheese\",\n        \"inStock\": true\n    },\n    {\n        \"id\": 5478,\n        \"category\": \"dairy\",\n        \"name\": \"Low Fat Vanilla Yogurt\",\n        \"inStock\": true\n    },\n    {\n        \"id\": 4875,\n        \"category\": \"bread-bakery\",\n        \"name\": \"2800 Watt Inverter Generator\",\n        \"inStock\": true\n    }\n]"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "2. Valentine's Book List API",
+			"item": [
+				{
+					"name": "2.1 Test Script - 200 Success",
+					"item": [
+						{
+							"name": "/books/lists - 200",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.collectionVariables.set(\"list\", \"fiction\");",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//Verify status code expected là 200",
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"let response = pm.response.json();",
+											"",
+											"//Verify Response có: \"status\": \"OK\"",
+											"pm.test(\"Response status is OK\", function () {",
+											"    pm.expect(response.status).to.eql(\"OK\");",
+											"});",
+											"",
+											"//Verify Response có array results ",
+											"pm.test(\"Response contains results array\", () => {",
+											"    pm.expect(response).to.have.property(\"results\");",
+											"    pm.expect(response.results).to.be.an(\"array\");   ",
+											"});",
+											"",
+											"//Verify info của book trả về thuộc category fiction đã call trước đó",
+											"let expectedCategory = pm.collectionVariables.get(\"list\");",
+											"pm.test(\"All books belong to the 'fiction' category\", () => {",
+											"    let books = response.results;",
+											"    pm.expect(books).to.be.an(\"array\").that.is.not.empty;",
+											"",
+											"    books.forEach((book, index) => {",
+											"        pm.expect(book.category).to.include(expectedCategory, 'Book at index ${index} does not belong to category \"fiction\"');",
+											"    });",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{valentine-url}}/books/lists?list={{list}}&api-key=8fhg93xkjd38fhg834jdfgjd",
+									"host": [
+										"{{valentine-url}}"
+									],
+									"path": [
+										"books",
+										"lists"
+									],
+									"query": [
+										{
+											"key": "list",
+											"value": "{{list}}"
+										},
+										{
+											"key": "api-key",
+											"value": "8fhg93xkjd38fhg834jdfgjd"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Status code 200",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{valentine-url}}/books/lists?list={{list}}&api-key=8fhg93xkjd38fhg834jdfgjd",
+											"host": [
+												"{{valentine-url}}"
+											],
+											"path": [
+												"books",
+												"lists"
+											],
+											"query": [
+												{
+													"key": "list",
+													"value": "{{list}}"
+												},
+												{
+													"key": "api-key",
+													"value": "8fhg93xkjd38fhg834jdfgjd"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Wed, 11 Dec 2024 15:45:34 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "266"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-powered-by",
+											"value": "Express"
+										},
+										{
+											"key": "access-control-allow-methods",
+											"value": "GET, OPTIONS"
+										},
+										{
+											"key": "etag",
+											"value": "W/\"10a-AgA1yFz9iaf0KX0vnSpaJjB+NrQ\""
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"OK\",\n    \"num_results\": 1,\n    \"page\": 1,\n    \"total_pages\": 1,\n    \"results\": [\n        {\n            \"title\": \"The Phoenix Project: A Novel about IT, DevOps, and Helping Your Business Win\",\n            \"category\": [\n                \"fiction\",\n                \"favourite-books\"\n            ],\n            \"type\": \"audio\",\n            \"author\": \"Gene Kim\",\n            \"release_year\": 2018,\n            \"rating\": \"9\"\n        }\n    ]\n}"
+								},
+								{
+									"name": "Response status OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{valentine-url}}/books/lists?list={{list}}&api-key=8fhg93xkjd38fhg834jdfgjd",
+											"host": [
+												"{{valentine-url}}"
+											],
+											"path": [
+												"books",
+												"lists"
+											],
+											"query": [
+												{
+													"key": "list",
+													"value": "{{list}}"
+												},
+												{
+													"key": "api-key",
+													"value": "8fhg93xkjd38fhg834jdfgjd"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Wed, 11 Dec 2024 15:46:20 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "266"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-powered-by",
+											"value": "Express"
+										},
+										{
+											"key": "access-control-allow-methods",
+											"value": "GET, OPTIONS"
+										},
+										{
+											"key": "etag",
+											"value": "W/\"10a-AgA1yFz9iaf0KX0vnSpaJjB+NrQ\""
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"OK\",\n    \"num_results\": 1,\n    \"page\": 1,\n    \"total_pages\": 1,\n    \"results\": [\n        {\n            \"title\": \"The Phoenix Project: A Novel about IT, DevOps, and Helping Your Business Win\",\n            \"category\": [\n                \"fiction\",\n                \"favourite-books\"\n            ],\n            \"type\": \"audio\",\n            \"author\": \"Gene Kim\",\n            \"release_year\": 2018,\n            \"rating\": \"9\"\n        }\n    ]\n}"
+								},
+								{
+									"name": "Response contains results array",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{valentine-url}}/books/lists?list={{list}}&api-key=8fhg93xkjd38fhg834jdfgjd",
+											"host": [
+												"{{valentine-url}}"
+											],
+											"path": [
+												"books",
+												"lists"
+											],
+											"query": [
+												{
+													"key": "list",
+													"value": "{{list}}"
+												},
+												{
+													"key": "api-key",
+													"value": "8fhg93xkjd38fhg834jdfgjd"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Wed, 11 Dec 2024 15:47:12 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "266"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-powered-by",
+											"value": "Express"
+										},
+										{
+											"key": "access-control-allow-methods",
+											"value": "GET, OPTIONS"
+										},
+										{
+											"key": "etag",
+											"value": "W/\"10a-AgA1yFz9iaf0KX0vnSpaJjB+NrQ\""
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"OK\",\n    \"num_results\": 1,\n    \"page\": 1,\n    \"total_pages\": 1,\n    \"results\": [\n        {\n            \"title\": \"The Phoenix Project: A Novel about IT, DevOps, and Helping Your Business Win\",\n            \"category\": [\n                \"fiction\",\n                \"favourite-books\"\n            ],\n            \"type\": \"audio\",\n            \"author\": \"Gene Kim\",\n            \"release_year\": 2018,\n            \"rating\": \"9\"\n        }\n    ]\n}"
+								},
+								{
+									"name": "All books belong to the 'fiction' category",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{valentine-url}}/books/lists?list={{list}}&api-key=8fhg93xkjd38fhg834jdfgjd",
+											"host": [
+												"{{valentine-url}}"
+											],
+											"path": [
+												"books",
+												"lists"
+											],
+											"query": [
+												{
+													"key": "list",
+													"value": "{{list}}"
+												},
+												{
+													"key": "api-key",
+													"value": "8fhg93xkjd38fhg834jdfgjd"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Wed, 11 Dec 2024 15:49:22 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "266"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-powered-by",
+											"value": "Express"
+										},
+										{
+											"key": "access-control-allow-methods",
+											"value": "GET, OPTIONS"
+										},
+										{
+											"key": "etag",
+											"value": "W/\"10a-AgA1yFz9iaf0KX0vnSpaJjB+NrQ\""
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"OK\",\n    \"num_results\": 1,\n    \"page\": 1,\n    \"total_pages\": 1,\n    \"results\": [\n        {\n            \"title\": \"The Phoenix Project: A Novel about IT, DevOps, and Helping Your Business Win\",\n            \"category\": [\n                \"fiction\",\n                \"favourite-books\"\n            ],\n            \"type\": \"audio\",\n            \"author\": \"Gene Kim\",\n            \"release_year\": 2018,\n            \"rating\": \"9\"\n        }\n    ]\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "2.2   Test script - 400 Bad Request",
+					"item": [
+						{
+							"name": "/books/lists - 400",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.collectionVariables.set(\"list\", \"fiction\");",
+											"pm.collectionVariables.set(\"api-key\", \"8fhg93xkjd38fhg834jdfgjd\");",
+											"",
+											"// Remove query parameter \"list\"",
+											"let url = pm.request.url;",
+											"console.log(\"Original URL:\", url.toString()); // To debugging",
+											"",
+											"url.removeQueryParams(\"list\");",
+											"console.log(\"Updated URL without 'list':\", url.toString());",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// //Verify status code expected là 400",
+											"// pm.test(\"Status code is 400\", function () {",
+											"//     pm.response.to.have.status(400);",
+											"// });",
+											"",
+											"//Verify nội dung của message trả về trong response theo SPEC",
+											"let response = pm.response.json();",
+											"let expectedErrorStr = \"Failed to resolve API List parameter request.queryparam.list\";",
+											"let expectedErrorCode = \"MISSING_BOOK_LIST\";",
+											"",
+											"pm.test(\"Error message is correct as defined in Spec\", function () {",
+											"     pm.expect(response.error).to.have.property(\"error-string\", expectedErrorStr);",
+											"     pm.expect(response.error.detail).to.have.property(\"errorcode\", expectedErrorCode);",
+											"});",
+											"",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{valentine-url}}/books/lists?list={{list}}&api-key={{api-key}}",
+									"host": [
+										"{{valentine-url}}"
+									],
+									"path": [
+										"books",
+										"lists"
+									],
+									"query": [
+										{
+											"key": "list",
+											"value": "{{list}}"
+										},
+										{
+											"key": "api-key",
+											"value": "{{api-key}}"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Status code 400 - Failed",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{valentine-url}}/books/lists?list={{list}}&api-key={{api-key}}",
+											"host": [
+												"{{valentine-url}}"
+											],
+											"path": [
+												"books",
+												"lists"
+											],
+											"query": [
+												{
+													"key": "list",
+													"value": "{{list}}"
+												},
+												{
+													"key": "api-key",
+													"value": "{{api-key}}"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Wed, 11 Dec 2024 16:42:29 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "266"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-powered-by",
+											"value": "Express"
+										},
+										{
+											"key": "access-control-allow-methods",
+											"value": "GET, OPTIONS"
+										},
+										{
+											"key": "etag",
+											"value": "W/\"10a-AgA1yFz9iaf0KX0vnSpaJjB+NrQ\""
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"OK\",\n    \"num_results\": 1,\n    \"page\": 1,\n    \"total_pages\": 1,\n    \"results\": [\n        {\n            \"title\": \"The Phoenix Project: A Novel about IT, DevOps, and Helping Your Business Win\",\n            \"category\": [\n                \"fiction\",\n                \"favourite-books\"\n            ],\n            \"type\": \"audio\",\n            \"author\": \"Gene Kim\",\n            \"release_year\": 2018,\n            \"rating\": \"9\"\n        }\n    ]\n}"
+								},
+								{
+									"name": "Status code 400 - Passed",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{valentine-url}}/books/lists?list={{list}}&api-key={{api-key}}",
+											"host": [
+												"{{valentine-url}}"
+											],
+											"path": [
+												"books",
+												"lists"
+											],
+											"query": [
+												{
+													"key": "list",
+													"value": "{{list}}"
+												},
+												{
+													"key": "api-key",
+													"value": "{{api-key}}"
+												}
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Wed, 11 Dec 2024 16:43:12 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "132"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-powered-by",
+											"value": "Express"
+										},
+										{
+											"key": "etag",
+											"value": "W/\"84-L54W96p+oIcM06Hs+A4djXr6MJw\""
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"error\": {\n        \"error-string\": \"Failed to resolve API List parameter request.queryparam.list\",\n        \"detail\": {\n            \"errorcode\": \"MISSING_BOOK_LIST\"\n        }\n    }\n}"
+								},
+								{
+									"name": "Error message is correct",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{valentine-url}}/books/lists?list={{list}}&api-key={{api-key}}",
+											"host": [
+												"{{valentine-url}}"
+											],
+											"path": [
+												"books",
+												"lists"
+											],
+											"query": [
+												{
+													"key": "list",
+													"value": "{{list}}"
+												},
+												{
+													"key": "api-key",
+													"value": "{{api-key}}"
+												}
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Wed, 11 Dec 2024 16:44:14 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "132"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-powered-by",
+											"value": "Express"
+										},
+										{
+											"key": "etag",
+											"value": "W/\"84-L54W96p+oIcM06Hs+A4djXr6MJw\""
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"error\": {\n        \"error-string\": \"Failed to resolve API List parameter request.queryparam.list\",\n        \"detail\": {\n            \"errorcode\": \"MISSING_BOOK_LIST\"\n        }\n    }\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "2.3   Test script - 401 Unauthorized",
+					"item": [
+						{
+							"name": "/books/lists - 401",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.collectionVariables.set(\"list\", \"fiction\");",
+											"pm.collectionVariables.set(\"api-key\", \"8fhg93xkjd38fhg834jdfgjd\");",
+											"",
+											"// Remove query parameter \"api-key\"",
+											"let url = pm.request.url;",
+											"    console.log(\"Original URL:\", url.toString());",
+											"",
+											"url.removeQueryParams(\"api-key\");",
+											"    console.log(\"Updated URL without 'api-key':\", url.toString());"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// //Verify status code expected là 401",
+											"// pm.test(\"Status code is 401\", function () {",
+											"//     pm.response.to.have.status(401);",
+											"// });",
+											"",
+											"//Verify nội dung của message trả về trong response theo SPEC",
+											"let response = pm.response.json();",
+											"let expectedErrorStr = \"Failed to resolve API Key parameter request.queryparam.api-key\";",
+											"let expectedErrorCode = \"FAILED_TO_RESOLVE_API_KEY\";",
+											"",
+											"pm.test(\"Error message is correct as defined in Spec\", function () {",
+											"     pm.expect(response.error).to.have.property(\"error-string\", expectedErrorStr);",
+											"     pm.expect(response.error.detail).to.have.property(\"errorcode\", expectedErrorCode);",
+											"});",
+											"",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{valentine-url}}/books/lists?list={{list}}&api-key={{api-key}}",
+									"host": [
+										"{{valentine-url}}"
+									],
+									"path": [
+										"books",
+										"lists"
+									],
+									"query": [
+										{
+											"key": "list",
+											"value": "{{list}}"
+										},
+										{
+											"key": "api-key",
+											"value": "{{api-key}}"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Status code 401 - Failed",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{valentine-url}}/books/lists?list={{list}}&api-key={{api-key}}",
+											"host": [
+												"{{valentine-url}}"
+											],
+											"path": [
+												"books",
+												"lists"
+											],
+											"query": [
+												{
+													"key": "list",
+													"value": "{{list}}"
+												},
+												{
+													"key": "api-key",
+													"value": "{{api-key}}"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Wed, 11 Dec 2024 16:48:21 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "266"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-powered-by",
+											"value": "Express"
+										},
+										{
+											"key": "access-control-allow-methods",
+											"value": "GET, OPTIONS"
+										},
+										{
+											"key": "etag",
+											"value": "W/\"10a-AgA1yFz9iaf0KX0vnSpaJjB+NrQ\""
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"OK\",\n    \"num_results\": 1,\n    \"page\": 1,\n    \"total_pages\": 1,\n    \"results\": [\n        {\n            \"title\": \"The Phoenix Project: A Novel about IT, DevOps, and Helping Your Business Win\",\n            \"category\": [\n                \"fiction\",\n                \"favourite-books\"\n            ],\n            \"type\": \"audio\",\n            \"author\": \"Gene Kim\",\n            \"release_year\": 2018,\n            \"rating\": \"9\"\n        }\n    ]\n}"
+								},
+								{
+									"name": "Status code 401 - Passed",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{valentine-url}}/books/lists?list={{list}}&api-key={{api-key}}",
+											"host": [
+												"{{valentine-url}}"
+											],
+											"path": [
+												"books",
+												"lists"
+											],
+											"query": [
+												{
+													"key": "list",
+													"value": "{{list}}"
+												},
+												{
+													"key": "api-key",
+													"value": "{{api-key}}"
+												}
+											]
+										}
+									},
+									"status": "Unauthorized",
+									"code": 401,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Wed, 11 Dec 2024 16:48:59 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "142"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-powered-by",
+											"value": "Express"
+										},
+										{
+											"key": "etag",
+											"value": "W/\"8e-DPnhjyKNhlDJcer4QF8NB+jR4FM\""
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"error\": {\n        \"error-string\": \"Failed to resolve API Key parameter request.queryparam.api-key\",\n        \"detail\": {\n            \"errorcode\": \"FAILED_TO_RESOLVE_API_KEY\"\n        }\n    }\n}"
+								},
+								{
+									"name": "Error message is correct",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{valentine-url}}/books/lists?list={{list}}&api-key={{api-key}}",
+											"host": [
+												"{{valentine-url}}"
+											],
+											"path": [
+												"books",
+												"lists"
+											],
+											"query": [
+												{
+													"key": "list",
+													"value": "{{list}}"
+												},
+												{
+													"key": "api-key",
+													"value": "{{api-key}}"
+												}
+											]
+										}
+									},
+									"status": "Unauthorized",
+									"code": 401,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Wed, 11 Dec 2024 16:50:17 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "142"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-powered-by",
+											"value": "Express"
+										},
+										{
+											"key": "etag",
+											"value": "W/\"8e-DPnhjyKNhlDJcer4QF8NB+jR4FM\""
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"error\": {\n        \"error-string\": \"Failed to resolve API Key parameter request.queryparam.api-key\",\n        \"detail\": {\n            \"errorcode\": \"FAILED_TO_RESOLVE_API_KEY\"\n        }\n    }\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "2.4   Test script - Schema Validation",
+					"item": [
+						{
+							"name": "/books/lists - 200",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.collectionVariables.set(\"list\", \"fiction\");",
+											"pm.collectionVariables.set(\"api-key\", \"8fhg93xkjd38fhg834jdfgjd\");"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const schema = {",
+											"    \"type\": \"object\",",
+											"    \"properties\": {",
+											"        \"status\": {",
+											"            \"type\": \"string\"",
+											"        },",
+											"        \"num_results\": { ",
+											"            \"type\": \"integer\" ",
+											"        },",
+											"        \"page\": { ",
+											"            \"type\": \"integer\" ",
+											"        },",
+											"        \"total_pages\": { ",
+											"            \"type\": \"integer\" ",
+											"        },",
+											"        \"results\": {",
+											"            \"type\": \"array\",",
+											"            \"items\": {",
+											"                \"type\": \"object\",",
+											"                \"properties\": {",
+											"                    \"title\": {",
+											"                        \"type\": \"string\"",
+											"                    },",
+											"                    \"category\": {",
+											"                        \"type\": \"array\",",
+											"                        \"item\": {",
+											"                            \"type\": \"string\"",
+											"                        }",
+											"                    },",
+											"                    \"type\": {",
+											"                        \"type\": \"string\"",
+											"                    },",
+											"                    \"author\": {",
+											"                        \"type\": \"string\"",
+											"                    },",
+											"                    \"release_year\": {",
+											"                        \"type\": \"integer\"",
+											"                    },",
+											"                    \"rating\": {",
+											"                        \"type\": \"string\"",
+											"                    }",
+											"                },",
+											"                \"required\": [\"title\", \"category\", \"type\", \"author\", \"release_year\", \"rating\" ]",
+											"            }",
+											"        }",
+											"    },",
+											"    \"required\": [\"status\", \"num_results\", \"page\", \"total_pages\", \"results\"]",
+											"};",
+											"",
+											"pm.test(\"Validate schema\", () => {",
+											"    pm.response.to.have.jsonSchema(schema);",
+											"});",
+											"",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{valentine-url}}/books/lists?list={{list}}&api-key={{api-key}}",
+									"host": [
+										"{{valentine-url}}"
+									],
+									"path": [
+										"books",
+										"lists"
+									],
+									"query": [
+										{
+											"key": "list",
+											"value": "{{list}}"
+										},
+										{
+											"key": "api-key",
+											"value": "{{api-key}}"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Validate schema",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{valentine-url}}/books/lists?list={{list}}&api-key={{api-key}}",
+											"host": [
+												"{{valentine-url}}"
+											],
+											"path": [
+												"books",
+												"lists"
+											],
+											"query": [
+												{
+													"key": "list",
+													"value": "{{list}}"
+												},
+												{
+													"key": "api-key",
+													"value": "{{api-key}}"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Date",
+											"value": "Wed, 11 Dec 2024 17:27:46 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "266"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "x-powered-by",
+											"value": "Express"
+										},
+										{
+											"key": "access-control-allow-methods",
+											"value": "GET, OPTIONS"
+										},
+										{
+											"key": "etag",
+											"value": "W/\"10a-AgA1yFz9iaf0KX0vnSpaJjB+NrQ\""
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"OK\",\n    \"num_results\": 1,\n    \"page\": 1,\n    \"total_pages\": 1,\n    \"results\": [\n        {\n            \"title\": \"The Phoenix Project: A Novel about IT, DevOps, and Helping Your Business Win\",\n            \"category\": [\n                \"fiction\",\n                \"favourite-books\"\n            ],\n            \"type\": \"audio\",\n            \"author\": \"Gene Kim\",\n            \"release_year\": 2018,\n            \"rating\": \"9\"\n        }\n    ]\n}"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base-url",
+			"value": "https://simple-grocery-store-api.glitch.me",
+			"type": "string"
+		},
+		{
+			"key": "cartId",
+			"value": "DjlEhK5AU6qsvl49Uiiex"
+		},
+		{
+			"key": "productId",
+			"value": "6483"
+		},
+		{
+			"key": "orderId",
+			"value": "1Ma8BGt4G9Nn8unhHlHlB"
+		},
+		{
+			"key": "accessToken",
+			"value": "8630086a63dcd728fe6b14a18da692e425430b3f19d1789dc7135e30a446e372"
+		},
+		{
+			"key": "clientName",
+			"value": "GiangVo_Test_7300"
+		},
+		{
+			"key": "clientEmail",
+			"value": "giangvo_test55225@example.com"
+		},
+		{
+			"key": "valentine-url",
+			"value": "https://valentines-book-list.glitch.me",
+			"type": "string"
+		},
+		{
+			"key": "expectedCategory",
+			"value": "fiction"
+		},
+		{
+			"key": "api-key",
+			"value": "8fhg93xkjd38fhg834jdfgjd"
+		},
+		{
+			"key": "list",
+			"value": "fiction"
+		}
+	]
+}
